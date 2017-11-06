@@ -14,4 +14,4 @@
   
 ### Using
 
-Execute `do parse` and follow the CLI instructions.
+Execute `./do parse` and follow the CLI instructions.
