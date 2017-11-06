@@ -1,0 +1,12 @@
+{
+    "require": {
+        "symfony/console": "^3.3",
+        "pimple/pimple": "^3.2",
+        "symfony/filesystem": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/"
+        }
+    }
+}
