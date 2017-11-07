@@ -61,7 +61,10 @@ class BeerParser extends Command
         $this->logger->log('Lets start the party 😊');
         $this->logger->log('Taking info about this beers: <array>[' . implode(', ', $this->beerIds) . ']</array>');
         /**
-         * The request of course shall have some kind of field validation. For example I could say that the key value is required, and the Validation Exception should be thrown.
+         * The request of course shall have some kind of field validation. 
+         * For example I could say that the key value is required, and the Validation Exception should be thrown.
+         * 
+         * Of course the key should be in ENV (every config var should be in ENV)
          */
         $response = $this->request->call('beers', [
             "ids" => implode(',', $this->beerIds),
