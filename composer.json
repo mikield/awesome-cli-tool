@@ -2,7 +2,10 @@
     "require": {
         "symfony/console": "^3.3",
         "pimple/pimple": "^3.2",
-        "symfony/filesystem": "^3.3"
+        "symfony/filesystem": "^3.3",
+        "symfony/dotenv": "^5.0",
+        "liamthegrey/brewerydb-php": "dev-master",
+        "php": "7.4.*"
     },
     "autoload": {
         "psr-4": {

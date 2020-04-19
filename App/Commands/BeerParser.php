@@ -5,6 +5,7 @@ namespace App\Commands;
 
 use App\Contracts\Formatter;
 use App\Contracts\Logger;
+use App\Contracts\Parser;
 use App\Contracts\Request;
 use Pimple\Container;
 use Symfony\Component\Console\Command\Command;
@@ -17,86 +18,49 @@ class BeerParser extends Command
 {
 
     /** @var array $beerIds Array of ids, that we will get from the API */
-    private $beerIds = ['ATVPzT', 'bBKEzY', 'fw76Tc', 'ew5ryE', 'c9RcAi'];
+    private array $beerIds = ['aG4Ie2', '2cLm8B', 'RK9Po6'];
 
-    /** @var string $apiBaseUrl The API base url */
-    private $apiBaseUrl = "http://api.brewerydb.com/v2/";
+    private Logger $logger;
 
-    /** @var Logger $logger Some console logger (cause we want candies in the output) */
-    private $logger;
+    private Formatter $formatter;
 
-    /** @var Request $request The service that shall make the hard work */
-    private $request;
-
-    /** @var Formatter $formatter The result formatter */
-    private $formatter;
+    private Parser $parser;
 
     public function __construct(Container $container, $name = null)
     {
         /**
-         * Getting the DI with Interface name - will protect us from mistakes in Provider naming (of course it can be a string) but to make a fake Dependency Invertion
+         * Getting the DI with Interface name - will protect us from mistakes in Provider naming (of course it can be a string) but to make a fake Dependency Inversion
          */
         $this->logger = $container->offsetGet(Logger::class);
-        $this->request = $container->offsetGet(Request::class);
         $this->formatter = $container->offsetGet(Formatter::class);
+        $this->parser = $container->offsetGet(Parser::class);
 
-        /**
-         * Some basic configuration for the simplest request provider
-         */
-        $this->request->setBaseUrl($this->apiBaseUrl);
         parent::__construct($name);
     }
-
 
     protected function configure()
     {
         $this->setName('parse')
             ->setDescription('Parse a list of beers from a API');
-
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->logger->setOutput($output);
+
         $this->logger->log('Lets start the party 😊');
         $this->logger->log('Taking info about this beers: <array>[' . implode(', ', $this->beerIds) . ']</array>');
-        /**
-         * The request of course shall have some kind of field validation. 
-         * For example I could say that the key value is required, and the Validation Exception should be thrown.
-         * 
-         * Of course the key should be in ENV (every config var should be in ENV)
-         */
-        $response = $this->request->call('beers', [
-            "ids" => implode(',', $this->beerIds),
-            "format" => "php",
-            "key" => "163b06d51ff21a62b466e63a2577b2a9"
-        ]);
-        $response = unserialize($response); // We shall unserialize the data, cause of format=php (API is sending it serialized)
+
         $helper = $this->getHelper('question');
-        $types = ['json', 'html', 'xml', 'all'];
-        $question = new ChoiceQuestion('What type will it be saved? (default: json)', $types, "json"); //What type do you want to use?
+        $question = new ChoiceQuestion('What type will it be saved? (default: all)', $this->formatter->getTypes(), "all"); //What type do you want to use?
         $question->setErrorMessage('Type %s is invalid.');
         $type = $helper->ask($input, $output, $question);
-        /**
-         * If the user has chosen to save in all possible formats - walk thought them and save.
-         * (In a perfect code it could be delegated to pools
-         * (the saving process shall be async cause they are not related on each other)
-         */
-        if ($type == 'all') {
-            unset($types['all']);
-            foreach ($types as $type) {
-                $this->saveResult($type, $response['data']);
-            }
-        } else {
-            $this->saveResult($type, $response['data']);
-        }
+
+        $response = $this->parser->request('beers', [
+            'ids' => implode(",", $this->beerIds)
+        ]);
+
+        $filename = $this->formatter->format($type, $response['data']);
+        $this->logger->log("The data is saved into: \n<path>". implode("\n", $filename) ."</path> 😉");
     }
-
-    private function saveResult($type, $content)
-    {
-        $filename = $this->formatter->format($type, $content);
-        $this->logger->log("The data is saved into: <path>$filename</path> 😉");
-    }
-
-
 }

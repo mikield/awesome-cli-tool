@@ -3,6 +3,11 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+use App\Providers\AppServiceProvider;
+use App\Providers\BeerFormatter\BeerServiceProvider;
+use App\Providers\BeerParserServiceProvider;
+use App\Providers\FilesystemServiceProvider;
+use App\Providers\LoggerServiceProvider;
 use Pimple\Container;
 use Symfony\Component\Console\Application;
 
@@ -10,17 +15,16 @@ use Symfony\Component\Console\Application;
 $container = new Container();
 
 /** Registering some Service Providers */
-$container->register(new \App\Providers\LoggerServiceProvider);
-$container->register(new \App\Providers\RequestServiceProvider);
-$container->register(new \App\Providers\FilesystemServiceProvider);
-$container->register(new \App\Providers\BeerFormatter\ServiceProvider(), [
+$container->register(new AppServiceProvider(__DIR__.'/.env'));
+$container->register(new LoggerServiceProvider);
+$container->register(new BeerParserServiceProvider());
+$container->register(new FilesystemServiceProvider);
+$container->register(new BeerServiceProvider(), [
     'output_dir' => __DIR__ . '/tmp'
 ]);
 
-$app = new Application('Awesome CLI Tool', '0.5b'); //Fake version (b - meaning beta)
+$app = new Application('Beer parser CLI', '1'); //Fake version (b - meaning beta)
 
-$app->addCommands([
-    new App\Commands\BeerParser($container)
-]);
+$app->add(new App\Commands\BeerParser($container));
 
 $app->run();

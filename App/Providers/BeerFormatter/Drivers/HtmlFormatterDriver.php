@@ -19,7 +19,7 @@ class HtmlFormatterDriver implements Driver
             $output .= "<tr>";
             $output .= "<th>" . $name . "</th>";
             $output .= "<th>" . $desc . "</th>";
-            $output .= "<th>" . $image . "</th>";
+            $output .= "<th><img src=" . $image . "></th>";
             $output .= "</tr>";
         }
 
