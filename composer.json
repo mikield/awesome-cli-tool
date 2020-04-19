@@ -5,7 +5,8 @@
         "symfony/filesystem": "^3.3",
         "symfony/dotenv": "^5.0",
         "liamthegrey/brewerydb-php": "dev-master",
-        "php": "7.4.*"
+        "php": "7.4.*",
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {

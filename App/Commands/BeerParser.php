@@ -2,17 +2,9 @@
 
 namespace App\Commands;
 
-
-use App\Contracts\Formatter;
-use App\Contracts\Logger;
-use App\Contracts\Parser;
-use App\Contracts\Request;
+use App\Contracts\{Formatter, Logger, Parser};
 use Pimple\Container;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-
+use Symfony\Component\Console\{Command\Command, Input\InputInterface, Output\OutputInterface, Question\ChoiceQuestion};
 
 class BeerParser extends Command
 {
@@ -61,6 +53,6 @@ class BeerParser extends Command
         ]);
 
         $filename = $this->formatter->format($type, $response['data']);
-        $this->logger->log("The data is saved into: \n<path>". implode("\n", $filename) ."</path> 😉");
+        $this->logger->log("The data is saved into: \n<path>" . implode("\n", $filename) . "</path> 😉");
     }
 }

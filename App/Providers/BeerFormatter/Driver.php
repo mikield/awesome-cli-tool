@@ -4,8 +4,11 @@ namespace App\Providers\BeerFormatter;
 
 interface Driver
 {
-    public function format($content);
-
+    /**
+     * Format content into required style
+     *
+     * @param $content
+     * @return string
+     */
+    public function format($content): string;
 }
-
-/** This interface exists only as a Provider related contract ;) */

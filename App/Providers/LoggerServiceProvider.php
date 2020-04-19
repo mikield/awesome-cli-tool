@@ -3,31 +3,45 @@
 namespace App\Providers;
 
 use App\Contracts\Logger;
-use Pimple\Container;
-use Pimple\ServiceProviderInterface;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
-use Symfony\Component\Console\Output\OutputInterface;
+use Pimple\{Container, ServiceProviderInterface};
+use Symfony\Component\Console\ {Formatter\OutputFormatterStyle, Output\OutputInterface};
 
 class LoggerServiceProvider implements ServiceProviderInterface
 {
 
-    public function register(Container $pimple)
+    /**
+     * Register service provider
+     *
+     * @param Container $pimple
+     * @return void
+     */
+    public function register(Container $pimple): void
     {
         /**
          *  Just a beautifier for console outputs
          *  Because Symfony console component has build in error handler :)
          */
-        $pimple[Logger::class] = new class implements Logger
-        {
-            /** @var  OutputInterface $output */
-            protected $output;
+        $pimple[Logger::class] = new class implements Logger {
+            private OutputInterface $output;
 
+            /**
+             * Set Logger output
+             *
+             * @param OutputInterface $output
+             * @return mixed
+             */
             public function setOutput(OutputInterface $output)
             {
                 $this->output = $output;
                 $this->attachStyles();
             }
 
+            /**
+             * Log a message
+             *
+             * @param string $message
+             * @return mixed
+             */
             public function log(string $message)
             {
                 $this->output->writeLn('<time>[' . date("Y-m-d H:i:s") . ']</time> ' . $message);
@@ -46,7 +60,5 @@ class LoggerServiceProvider implements ServiceProviderInterface
 
             }
         };
-
     }
-
 }

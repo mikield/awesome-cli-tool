@@ -3,13 +3,18 @@
 namespace App\Providers;
 
 use App\Contracts\Parser;
-use Pimple\Container;
-use Pimple\ServiceProviderInterface;
+use Pimple\{Container, ServiceProviderInterface};
 
 class BeerParserServiceProvider implements ServiceProviderInterface
 {
 
-    public function register(Container $pimple)
+    /**
+     * Register service provider
+     *
+     * @param Container $pimple
+     * @return void
+     */
+    public function register(Container $pimple): void
     {
         $pimple[Parser::class] = new class(
             $_ENV['API_KEY'],

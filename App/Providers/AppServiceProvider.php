@@ -3,8 +3,7 @@
 namespace App\Providers;
 
 use Exception;
-use Pimple\Container;
-use Pimple\ServiceProviderInterface;
+use Pimple\{Container, ServiceProviderInterface};
 use Symfony\Component\Dotenv\Dotenv;
 
 class AppServiceProvider implements ServiceProviderInterface
@@ -17,10 +16,13 @@ class AppServiceProvider implements ServiceProviderInterface
     }
 
     /**
+     * Register service provider
+     *
      * @param Container $pimple
+     * @return void
      * @throws Exception
      */
-    public function register(Container $pimple)
+    public function register(Container $pimple): void
     {
         if (!file_exists($this->envFilePath)) {
             throw new Exception('Env file is required');

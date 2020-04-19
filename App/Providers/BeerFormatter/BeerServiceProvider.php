@@ -2,20 +2,20 @@
 
 namespace App\Providers\BeerFormatter;
 
-use App\Contracts\Filesystem;
-use App\Contracts\Formatter;
-use App\Providers\BeerFormatter\Drivers\HtmlFormatterDriver;
-use App\Providers\BeerFormatter\Drivers\JsonFormatterDriver;
-use Pimple\Container;
-use Pimple\Exception\InvalidServiceIdentifierException;
-use Pimple\ServiceProviderInterface;
+use App\Contracts\ {Filesystem, Formatter};
+use App\Providers\BeerFormatter\Drivers\ {HtmlFormatterDriver, JsonFormatterDriver};
+use Pimple\ {Container, Exception\InvalidServiceIdentifierException, ServiceProviderInterface};
 use Symfony\Component\Console\Exception\InvalidArgumentException;
-
 
 class BeerServiceProvider implements ServiceProviderInterface
 {
-
-    public function register(Container $pimple)
+    /**
+     * Register service provider
+     *
+     * @param Container $pimple
+     * @return void
+     */
+    public function register(Container $pimple): void
     {
         if (!$pimple->offsetExists(Filesystem::class)) {
             throw new InvalidServiceIdentifierException('Filesystem is required to use Formatter');
@@ -52,17 +52,33 @@ class BeerServiceProvider implements ServiceProviderInterface
                     $this->pimple = $pimple;
                 }
 
+                /**
+                 * Set output dir path
+                 *
+                 * @param string $dir
+                 */
                 public function setOutputDir(string $dir): void
                 {
                     $this->dir = $dir;
                 }
 
+                /**
+                 * Get available types
+                 *
+                 * @return array
+                 */
                 public function getTypes(): array
                 {
                     return [self::ALL_TYPE, ...array_keys($this->drivers)];
                 }
 
-
+                /**
+                 * Format content to selected type
+                 *
+                 * @param string $type
+                 * @param $content
+                 * @return mixed
+                 */
                 public function format(string $type, $content)
                 {
                     if ($type === self::ALL_TYPE) {

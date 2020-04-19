@@ -3,14 +3,19 @@
 namespace App\Providers;
 
 use App\Contracts\Filesystem;
-use Pimple\Container;
-use Pimple\ServiceProviderInterface;
+use Pimple\{Container, ServiceProviderInterface};
 use Symfony\Component\Filesystem\Filesystem as SymfonyFileSystem;
 
 class FilesystemServiceProvider implements ServiceProviderInterface
 {
 
-    public function register(Container $pimple)
+    /**
+     * Register service provider
+     *
+     * @param Container $pimple
+     * @return void
+     */
+    public function register(Container $pimple): void
     {
         /**
          * We use a fake anon class just to ensure that the Contract was resolved.
